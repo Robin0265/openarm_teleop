@@ -10,6 +10,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y libcli11-dev
       - run: uv sync --locked --extra test
       - run: uv run --no-sync pytest -q
       - run: uv build

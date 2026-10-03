@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT; robot assets retain their upstream license" }
 authors = [{name = "Chuizheng Kong"}]
-dependencies = ["numpy", "scipy", "mujoco>=3.3", "geo-kin-core", "xrt-devices>=0.1.0"]
+dependencies = ["numpy", "scipy", "mujoco>=3.3", "geo-kin-core", "xrt-devices>=0.1.0", "openarm-can==1.4.0"]
 
 [project.optional-dependencies]
 devices = ["xrt-devices[xr,recording]"]
@@ -23,6 +23,7 @@ openarm-teleop = "openarm_teleop.demos.teleop:main"
 [tool.uv.sources]
 geo-kin-core = {path = "external/geo_kin_core", editable = true}
 xrt-devices = {path = "external/XRT_devices", editable = true}
+openarm-can = {path = "external/openarm_can/python"}
 
 [tool.geo-kin]
 product = "openarm"
