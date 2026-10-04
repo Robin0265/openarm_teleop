@@ -11,3 +11,4 @@ recordings/
 license.toml
 
 MUJOCO_LOG.TXT
+logs/*
