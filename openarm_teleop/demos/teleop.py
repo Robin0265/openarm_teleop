@@ -19,7 +19,7 @@ def parser():
     source.add_argument('--frames', help='geo_kin_core frame-stream NPZ')
     source.add_argument('--csv', help='XRT body-pose CSV')
     p.add_argument('--hardware', 
-                   default=False,
+                   default=True,
                    action=argparse.BooleanOptionalAction,
                    help='Use real robot hardware, default to False (simulation only)'
                    )
@@ -48,12 +48,12 @@ def parser():
                     )
     hw.add_argument('--gain-scale',
                     type=float,
-                    default=0.5,
+                    default=0.75,
                     help='Scale of the stock MIT position gains (kd scales with its square root)'
                     )
     hw.add_argument('--max-joint-vel',
                     type=float,
-                    default=0.5,
+                    default=1.5,
                     help='Joint speed limit in rad/s'
                     )
     hw.add_argument('--joint-limit-margin-deg',

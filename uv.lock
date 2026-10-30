@@ -621,6 +621,75 @@ epath = [
 ]
 
 [[package]]
+name = "eurola-geo-kin-core"
+version = "0.1.2"
+source = { editable = "external/geo_kin_core" }
+dependencies = [
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
+    { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "mink", marker = "extra == 'fallback'" },
+    { name = "mujoco", marker = "extra == 'viz'" },
+    { name = "numpy" },
+    { name = "pin", marker = "extra == 'spec-tools'", specifier = ">=4.0.0" },
+    { name = "quadprog", marker = "extra == 'fallback'" },
+    { name = "scipy", marker = "extra == 'fallback'" },
+    { name = "scipy", marker = "extra == 'spec-tools'" },
+    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2" },
+]
+provides-extras = ["spec-tools", "fallback", "viz"]
+
+[[package]]
+name = "eurola-xrt-devices"
+version = "0.1.2"
+source = { editable = "external/XRT_devices" }
+dependencies = [
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
+    { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
+    { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+]
+
+[package.optional-dependencies]
+mediapipe = [
+    { name = "mediapipe" },
+    { name = "opencv-contrib-python" },
+]
+recording = [
+    { name = "pandas" },
+]
+xr = [
+    { name = "aiortc" },
+    { name = "fastapi" },
+    { name = "loguru" },
+    { name = "uvicorn" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiortc", marker = "extra == 'xr'", specifier = ">=1.9,<2" },
+    { name = "build", marker = "extra == 'test'" },
+    { name = "fastapi", marker = "extra == 'xr'", specifier = ">=0.110,<1" },
+    { name = "httpx", marker = "extra == 'test'", specifier = ">=0.27" },
+    { name = "loguru", marker = "extra == 'xr'", specifier = ">=0.7,<1" },
+    { name = "mediapipe", marker = "extra == 'mediapipe'", specifier = ">=0.10.20,<0.11" },
+    { name = "numpy", specifier = ">=1.24" },
+    { name = "opencv-contrib-python", marker = "extra == 'mediapipe'", specifier = ">=4.8,<5" },
+    { name = "pandas", marker = "extra == 'recording'", specifier = ">=2,<3" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=8" },
+    { name = "scipy", specifier = ">=1.10" },
+    { name = "uvicorn", marker = "extra == 'xr'", specifier = ">=0.29,<1" },
+]
+provides-extras = ["xr", "mediapipe", "recording", "test"]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -810,30 +879,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/77/cd/9be253869fc42e764
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6c/c0/a98505f18594f1bce828bb159cec0fcf9860562f1a2c85913409fc8f3d9e/fsspec-2026.9.0-py3-none-any.whl", hash = "sha256:8dd6e646e99ea382bd85f97a45e6b526a442d79423a7dc673f1e2756d05fcb5f", size = 221738, upload-time = "2026-09-18T17:50:41.341Z" },
 ]
-
-[[package]]
-name = "geo-kin-core"
-version = "0.1.0"
-source = { editable = "external/geo_kin_core" }
-dependencies = [
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
-    { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "mink", marker = "extra == 'fallback'" },
-    { name = "mujoco", marker = "extra == 'viz'" },
-    { name = "numpy" },
-    { name = "pin", marker = "extra == 'spec-tools'", specifier = ">=4.0.0" },
-    { name = "quadprog", marker = "extra == 'fallback'" },
-    { name = "scipy", marker = "extra == 'fallback'" },
-    { name = "scipy", marker = "extra == 'spec-tools'" },
-    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2" },
-]
-provides-extras = ["spec-tools", "fallback", "viz"]
 
 [[package]]
 name = "glfw"
@@ -1556,7 +1601,8 @@ name = "openarm-teleop"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "geo-kin-core" },
+    { name = "eurola-geo-kin-core" },
+    { name = "eurola-xrt-devices" },
     { name = "mujoco" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
@@ -1565,15 +1611,14 @@ dependencies = [
     { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "xrt-devices" },
 ]
 
 [package.optional-dependencies]
 devices = [
-    { name = "xrt-devices", extra = ["recording", "xr"] },
+    { name = "eurola-xrt-devices", extra = ["recording", "xr"] },
 ]
 mediapipe = [
-    { name = "xrt-devices", extra = ["mediapipe"] },
+    { name = "eurola-xrt-devices", extra = ["mediapipe"] },
 ]
 test = [
     { name = "pytest" },
@@ -1581,15 +1626,15 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "geo-kin-core", editable = "external/geo_kin_core" },
+    { name = "eurola-geo-kin-core", editable = "external/geo_kin_core" },
+    { name = "eurola-xrt-devices", editable = "external/XRT_devices" },
+    { name = "eurola-xrt-devices", extras = ["mediapipe"], marker = "extra == 'mediapipe'", editable = "external/XRT_devices" },
+    { name = "eurola-xrt-devices", extras = ["xr", "recording"], marker = "extra == 'devices'", editable = "external/XRT_devices" },
     { name = "mujoco", specifier = ">=3.3" },
     { name = "numpy" },
     { name = "openarm-can", directory = "external/openarm_can/python" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "scipy" },
-    { name = "xrt-devices", editable = "external/XRT_devices" },
-    { name = "xrt-devices", extras = ["mediapipe"], marker = "extra == 'mediapipe'", editable = "external/XRT_devices" },
-    { name = "xrt-devices", extras = ["xr", "recording"], marker = "extra == 'devices'", editable = "external/XRT_devices" },
 ]
 provides-extras = ["devices", "mediapipe", "test"]
 
@@ -2702,51 +2747,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/b3/8f/705086c9d734d3b66
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e1/07/c6fe3ad3e685340704d314d765b7912993bcb8dc198f0e7a89382d37974b/win32_setctime-1.2.0-py3-none-any.whl", hash = "sha256:95d644c4e708aba81dc3704a116d8cbc974d70b3bdb8be1d150e36be6e9d1390", size = 4083, upload-time = "2024-12-07T15:28:26.465Z" },
 ]
-
-[[package]]
-name = "xrt-devices"
-version = "0.1.0"
-source = { editable = "external/XRT_devices" }
-dependencies = [
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
-    { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
-    { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-]
-
-[package.optional-dependencies]
-mediapipe = [
-    { name = "mediapipe" },
-    { name = "opencv-contrib-python" },
-]
-recording = [
-    { name = "pandas" },
-]
-xr = [
-    { name = "aiortc" },
-    { name = "fastapi" },
-    { name = "loguru" },
-    { name = "uvicorn" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "aiortc", marker = "extra == 'xr'", specifier = ">=1.9,<2" },
-    { name = "build", marker = "extra == 'test'" },
-    { name = "fastapi", marker = "extra == 'xr'", specifier = ">=0.110,<1" },
-    { name = "httpx", marker = "extra == 'test'", specifier = ">=0.27" },
-    { name = "loguru", marker = "extra == 'xr'", specifier = ">=0.7,<1" },
-    { name = "mediapipe", marker = "extra == 'mediapipe'", specifier = ">=0.10.20,<0.11" },
-    { name = "numpy", specifier = ">=1.24" },
-    { name = "opencv-contrib-python", marker = "extra == 'mediapipe'", specifier = ">=4.8,<5" },
-    { name = "pandas", marker = "extra == 'recording'", specifier = ">=2,<3" },
-    { name = "pytest", marker = "extra == 'test'", specifier = ">=8" },
-    { name = "scipy", specifier = ">=1.10" },
-    { name = "uvicorn", marker = "extra == 'xr'", specifier = ">=0.29,<1" },
-]
-provides-extras = ["xr", "mediapipe", "recording", "test"]
 
 [[package]]
 name = "zipp"
