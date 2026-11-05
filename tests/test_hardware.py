@@ -252,7 +252,9 @@ def test_dry_run_replay_reaches_ready_tracks_and_homes(monkeypatch, tmp_path, ca
     out = capsys.readouterr().out
     assert 'Tracking.' in out and 'At home.' in out and 'Tracking summary' in out
     # Tracking started from the ready pose, with the measured pose fed back to the solver
-    np.testing.assert_allclose(calls[0]['q_current_right'], READY, atol=0.05)  # one command step behind
+    from openarm_teleop.demos.teleop import READY_POSE_DEG
+    np.testing.assert_allclose(calls[0]['q_current_right'], np.radians(READY_POSE_DEG['right']),
+                               atol=0.05)  # one command step behind
     assert len(buses) == 2 and not any(bus.enabled or bus.opened for bus in buses)
     for bus in buses:
         np.testing.assert_allclose(bus.read().q[3], np.deg2rad(5.0), atol=1e-3)  # home, inside J4's stop

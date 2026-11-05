@@ -8,6 +8,34 @@ import time
 
 VIEWER_FPS = 60.0  # viewer refresh on hardware, where the solver loop is not rate limited
 
+# Initial (ready) pose in degrees, joint1..joint7 per arm. Edit to change where the arms start.
+# The arms are mirrored: joint1 + raises the right arm forward, - raises the left.
+# The solver's built-in pose is [0, 0, 0, 90, 0, 0, 0] on both arms. Used in simulation and on
+# hardware, where the arms ramp here at --max-joint-vel before tracking starts.
+READY_POSE_DEG = {
+    'right': [60.0, 0.0, 0.0, 45.0, 0.0, 0.0, 0.0],
+    'left':  [-60.0, 0.0, 0.0, 45.0, 0.0, 0.0, 0.0],
+}
+
+
+def _ready_q(model, controller):
+    """READY_POSE_DEG in radians, checked against the model's joint limits."""
+    import numpy as np
+    ready = {}
+    for side, deg in READY_POSE_DEG.items():
+        q = np.radians(np.asarray(deg, dtype=float))
+        addrs = getattr(controller, f'{side}_arm_qpos_addrs')
+        if q.shape != (len(addrs),):
+            raise ValueError(f'READY_POSE_DEG[{side!r}] needs {len(addrs)} joint angles, got {len(deg)}')
+        for i, (addr, value) in enumerate(zip(addrs, q)):
+            joint = int(np.flatnonzero(model.jnt_qposadr == addr)[0])
+            lo, hi = model.jnt_range[joint]
+            if not lo <= value <= hi:
+                raise ValueError(f'READY_POSE_DEG[{side!r}] joint{i + 1} = {deg[i]} deg is outside '
+                                 f'[{math.degrees(lo):.1f}, {math.degrees(hi):.1f}] deg')
+        ready[side] = q
+    return ready
+
 
 def parser():
     p = argparse.ArgumentParser(description=__doc__)
@@ -77,7 +105,7 @@ def parser():
                     )
     hw.add_argument('--gripper-close-overtravel-deg',
                     type=float,
-                    default=5.0,
+                    default=0.0,
                     help='Command a closed hand this many motor degrees past closed, to squeeze (0: off)'
                     )
     hw.add_argument('--log',
@@ -181,12 +209,13 @@ def run(args):
     else:
         controller = OpenArmMuJoCoController(model, data)
     controller.setup_mocap_body("base_mocap_mover")
+    ready_q = _ready_q(model, controller)
     for side in ('right','left'):
-        data.qpos[getattr(controller, f'{side}_arm_qpos_addrs')] = session.default_q[side]
+        data.qpos[getattr(controller, f'{side}_arm_qpos_addrs')] = ready_q[side]
     mujoco.mj_forward(model, data)
     controller._update_current_positions()
-    controller.set_joint_goals({'q_goal_right':session.default_q['right'], 'q_goal_left':session.default_q['left']})
-    session.reset(session.default_q['right'], session.default_q['left'])
+    controller.set_joint_goals({'q_goal_right':ready_q['right'], 'q_goal_left':ready_q['left']})
+    session.reset(ready_q['right'], ready_q['left'])
     if args.hardware:
         # Read-only pre-flight, before any device starts: nothing is enabled yet.
         _hardware_preflight(args, controller)
@@ -217,7 +246,7 @@ def run(args):
         if args.hardware:
             # Registered last, so the motors are switched off before the device is closed.
             stack.callback(controller.stop)
-            return _run_hardware(args, session, controller, source, viewer, overlay, data)
+            return _run_hardware(args, session, controller, source, viewer, overlay, data, ready_q)
         count = 0
         start = time.monotonic()
         try:
@@ -293,7 +322,7 @@ def _hardware_preflight(args, controller):
         print(f'Warning: {warning}.')
 
 
-def _run_hardware(args, session, controller, source, viewer, overlay, data):
+def _run_hardware(args, session, controller, source, viewer, overlay, data, ready_q):
     """Ready pose, tracking under supervision, then home before the motors are switched off."""
     from geo_kin_core.types import RetargetFrame
     from openarm_teleop.control.hardware_controller import HOME_RAD, SIDES
@@ -341,7 +370,7 @@ def _run_hardware(args, session, controller, source, viewer, overlay, data):
     try:
         try:
             controller.start()
-            controller.set_joint_goals({f'q_goal_{side}': session.default_q[side] for side in SIDES})
+            controller.set_joint_goals({f'q_goal_{side}': ready_q[side] for side in SIDES})
             print('\nMoving to the ready pose (Ctrl-C to stop)...')
             wait_for(lambda: controller.goals_reached() or controller.fault is not None)
 
